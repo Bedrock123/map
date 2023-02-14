@@ -42,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   //Find the absolute path of the json directory
   const jsonDirectory = path.join(process.cwd(), "maps");
   const buffer = readFileSync(jsonDirectory + "/pop.tif");
-  const georaster = await geoblaze.parse(buffer);
+  const georaster = await geoblaze.parse("localhost:3000/pop.tif");
 
   const result = await geoblaze.sum(georaster, boundingBox);
 
