@@ -41,11 +41,14 @@ const boundingBox = {
 const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   //Find the absolute path of the json directory
 
+  const body = req.body;
+  console.log(body);
+
   const georaster = await geoblaze.parse(
     "https://map-gules.vercel.app/pop.tif"
   );
 
-  const result = await geoblaze.sum(georaster, boundingBox);
+  const result = await geoblaze.sum(georaster, body.data);
 
   res.status(200).json({ name: result });
 };
