@@ -91,10 +91,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     populationMapType = "pop1";
   }
 
-  console.log("blastAreaKm", blastAreaKm);
-  console.log("populationMapType", populationMapType);
-  console.log("_resultDampening", _resultDampening);
-
   try {
     // Calculate the population
     const georaster = await geoblaze.parse(
