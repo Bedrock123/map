@@ -3,54 +3,38 @@
 // @ts-ignore
 import type { NextApiRequest, NextApiResponse } from "next";
 import geoblaze from "geoblaze";
-import path from "path";
-import { promises as fs } from "fs";
-import { readFileSync } from "fs";
-
+import area from "@turf/area";
 type Data = {
-  name: string;
-};
-
-const boundingBox = {
-  type: "FeatureCollection",
-  features: [
-    {
-      type: "Feature",
-      properties: {},
-      geometry: {
-        coordinates: [
-          [
-            [-80.56826239984372, 28.315122155740866],
-            [-81.48928985428935, 30.551290693619507],
-            [-82.3988513837634, 30.639058236741633],
-            [-86.11767787006798, 30.889368071054776],
-            [-87.7159619004814, 30.976778516792066],
-            [-87.6831408960683, 30.27640242656915],
-            [-80.7368624110119, 25.008420617522717],
-            [-79.99656052038213, 25.48528452307913],
-            [-79.75488321239801, 26.965976918322482],
-            [-80.56826239984372, 28.315122155740866],
-          ],
-        ],
-        type: "Polygon",
-      },
-    },
-  ],
+  population: number;
+  mapType: string;
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-  //Find the absolute path of the json directory
-
   const body = req.body;
-  console.log(body);
+
+  // Get the blast area in meters
+  const blastArea = area(body.data);
+
+  // Convert to km
+  const blastAreaKm = blastArea / 1000000;
+
+  let populationMapType = "pop1";
+
+  if (blastAreaKm > 10000) {
+    populationMapType = "pop2";
+  } else if (blastAreaKm > 100000) {
+    populationMapType = "pop3";
+  } else if (blastAreaKm > 1000000) {
+    populationMapType = "pop4";
+  }
 
   const georaster = await geoblaze.parse(
-    "https://map-gules.vercel.app/maps/pop4.tif"
+    `https://map-gules.vercel.app/maps/${populationMapType}.tif`
   );
 
   const result = await geoblaze.sum(georaster, body.data);
 
-  res.status(200).json({ name: result });
+  res.status(200).json({ population: result, mapType: populationMapType });
 };
 
 export default handler;
