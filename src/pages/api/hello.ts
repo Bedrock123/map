@@ -49,6 +49,8 @@ type Data = {
   mapType?: string;
   blastAreaKm?: string;
   resultDampening?: number;
+  error?: string;
+  hasExpandedBlastGeoJson?: boolean;
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
