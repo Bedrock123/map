@@ -45,7 +45,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   console.log(body);
 
   const georaster = await geoblaze.parse(
-    "https://map-gules.vercel.app/pop.tif"
+    "https://map-gules.vercel.app/maps/pop4.tif"
   );
 
   const result = await geoblaze.sum(georaster, body.data);
